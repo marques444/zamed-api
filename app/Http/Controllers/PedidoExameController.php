@@ -19,9 +19,7 @@ class PedidoExameController extends Controller
             'paciente_id' => $request->paciente_id,
             'detalhes' => $request->detalhes,
         ]);
-    
-        // aqui você chama seu sistema pra enviar ao laboratório
-    
+        
         return response()->json($pedido);
     }
 }
