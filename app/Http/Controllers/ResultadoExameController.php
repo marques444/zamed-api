@@ -2,25 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ResultadoExame;
 use Illuminate\Http\Request;
 
 class ResultadoExameController extends Controller
 {
-    public function store(Request $request)
-    {
-        $request->validate([
-            'pedido_exame_id' => 'required|exists:pedidos_exames,id',
-            'arquivo_pdf' => 'required|file|mimes:pdf',
+    public function index() {
+        return ResultadoExame::all();
+    }
+
+    public function store(Request $request) {
+        $data = $request->validate([
+            'pedido_exame_id' => 'required|exists:pedido_exames,id',
+            'resultado' => 'required|string',
         ]);
 
-        $nome = 'resultado_' . time() . '.pdf';
-        $request->file('arquivo_pdf')->storeAs('public/resultados', $nome);
+        $resultado = ResultadoExame::create($data);
 
-        $resultado = ResultadoExame::create([
-            'pedido_exame_id' => $request->pedido_exame_id,
-            'arquivo_pdf' => 'storage/resultados/' . $nome,
-        ]);
+        return response()->json([
+            'mensagem' => 'Resultado salvo com sucesso',
+            'resultado' => $resultado
+        ], 201);
+    }
 
-        return response()->json(['link_pdf' => asset('storage/resultados/' . $nome)]);
+    public function show($id) {
+        return ResultadoExame::findOrFail($id);
+    }
+
+    public function update(Request $request, $id) {
+        $resultado = ResultadoExame::findOrFail($id);
+        $resultado->update($request->all());
+        return $resultado;
+    }
+
+    public function destroy($id) {
+        return ResultadoExame::destroy($id);
     }
 }
