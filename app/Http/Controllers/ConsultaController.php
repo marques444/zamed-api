@@ -11,6 +11,7 @@ class ConsultaController extends Controller
         return Consulta::all();
     }
 
+    //CRIA CONSULTA
     public function store(Request $request) {
         return Consulta::create($request->all());
     }
@@ -27,5 +28,17 @@ class ConsultaController extends Controller
 
     public function destroy($id) {
         return Consulta::destroy($id);
+    }
+
+     //  CANCELA CONSULTA
+     public function cancelar($id) {
+        $consulta = Consulta::findOrFail($id);
+        $consulta->status = 'cancelada';
+        $consulta->save();
+
+        return response()->json([
+            'mensagem' => 'Consulta cancelada com sucesso',
+            'consulta' => $consulta
+        ]);
     }
 }
